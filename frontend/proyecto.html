@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#08090a" />
+  <title>Acuicontrol · Proyecto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/tw-config.js"></script>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body class="min-h-dvh antialiased">
+  <a href="#contenido" class="skip-link">Saltar al contenido</a>
+
+  <header class="topbar">
+    <nav class="max-w-[1200px] mx-auto px-4 h-14 flex items-center justify-between gap-3" aria-label="Principal">
+      <a href="/" class="logo">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+          <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+          <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+        </svg>
+        Acuicontrol
+      </a>
+      <div class="flex items-center gap-1">
+        <a href="/" class="nav-link">Captura</a>
+        <a href="/proyecto.html" class="nav-link" aria-current="page">Proyecto</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="contenido" class="max-w-[1200px] mx-auto px-4 pb-24">
+
+    <!-- Hero -->
+    <section class="pt-16 md:pt-24 grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-end">
+      <div data-reveal-group>
+        <p class="eyebrow mb-5">PROYECTO ESCOLAR · v1</p>
+        <h1 class="hero-title" data-palabras>Alimentar al camarón con datos, no a ojo.</h1>
+        <p class="lead mt-6 max-w-[34rem]">
+          Acuicontrol es una aplicación web que recomienda la dosis diaria de alimento para cada estanque
+          de una granja camaronícola, a partir de lecturas que el técnico ya toma en campo. Sin sensores
+          ni hardware IoT: solo un celular.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href="/" class="btn btn-accent !w-auto px-5">Ir a la captura</a>
+          <a href="#simulador" class="nav-link">Probar el simulador →</a>
+        </div>
+      </div>
+
+      <!-- Marco de producto: la tarjeta de recomendación recorre tres escenarios -->
+      <div class="hero-floor parallax" data-reveal style="--d: 350ms">
+        <div id="hero-card" class="card result-card estado-ok" aria-hidden="true">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <p class="card-title !mb-0"><span class="step">03</span>Recomendación</p>
+            <span class="badge" data-badge>Normal</span>
+          </div>
+          <p class="dosis-valor"><span data-dosis>95.63</span> <span class="text-lg text-muted">kg/día</span></p>
+          <div class="mt-4">
+            <div class="flex justify-between text-[12px] text-muted mb-1.5">
+              <span>Dosis base <span class="num" data-base>95.63 kg</span></span>
+              <span data-reduccion>sin ajuste</span>
+            </div>
+            <div class="barra"><span data-barra style="--v: 1"></span></div>
+          </div>
+          <dl class="mt-4 grid grid-cols-3 gap-2 text-[12px]">
+            <div class="metrica"><dt>Sobrante</dt><dd data-lect="sobrante">5 %</dd></div>
+            <div class="metrica"><dt>Temp.</dt><dd data-lect="temperatura">28 °C</dd></div>
+            <div class="metrica"><dt>O₂ mg/L</dt><dd data-lect="oxigeno">5.0</dd></div>
+          </dl>
+          <p class="mt-4 text-[15px] min-h-[3em]" data-just>Dosis calculada sin ajustes: condiciones dentro de rango normal.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cifras -->
+    <section class="mt-20 border-y border-line" aria-label="El proyecto en cifras">
+      <dl class="grid grid-cols-2 md:grid-cols-4 divide-line md:divide-x" data-reveal-group>
+        <div class="py-8 md:px-6 flex flex-col-reverse"><dt class="text-muted text-[13px] mt-2">lecturas de campo por día</dt><dd class="text-paper text-[40px] leading-none tracking-[-0.022em] num" data-contar="3" data-dec="0">0</dd></div>
+        <div class="py-8 md:px-6 flex flex-col-reverse"><dt class="text-muted text-[13px] mt-2">sensores IoT necesarios</dt><dd class="text-paper text-[40px] leading-none tracking-[-0.022em] num" data-contar="0" data-dec="0">0</dd></div>
+        <div class="py-8 md:px-6 flex flex-col-reverse"><dt class="text-muted text-[13px] mt-2">factores de corrección</dt><dd class="text-paper text-[40px] leading-none tracking-[-0.022em] num" data-contar="3" data-dec="0">0</dd></div>
+        <div class="py-8 md:px-6 flex flex-col-reverse"><dt class="text-muted text-[13px] mt-2">rangos de peso con tasa propia</dt><dd class="text-paper text-[40px] leading-none tracking-[-0.022em] num" data-contar="6" data-dec="0">0</dd></div>
+      </dl>
+    </section>
+
+    <!-- Escena del estanque: se fija en pantalla y avanza con el scroll -->
+    <section id="escena" class="escena-pin section" aria-labelledby="escena-titulo">
+      <div class="escena-sticky">
+        <div class="escena-cabecera">
+          <p class="eyebrow mb-4">01 · EL ESTANQUE</p>
+          <h2 id="escena-titulo" class="section-title max-w-[44rem]">Lo que el técnico observa, en una sola imagen.</h2>
+        </div>
+        <figure class="escena-marco card !p-0 overflow-hidden" data-paso="todo">
+          <svg class="escena" viewBox="0 0 1200 380" role="img" aria-labelledby="escena-desc">
+          <desc id="escena-desc">Corte de un estanque: alimento cayendo al agua y a una charola de muestreo, burbujas de oxígeno subiendo desde un aireador, un termómetro en el agua y camarones nadando.</desc>
+          <defs>
+            <linearGradient id="agua" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#02b8cc" stop-opacity="0.16" />
+              <stop offset="1" stop-color="#02b8cc" stop-opacity="0.02" />
+            </linearGradient>
+            <g id="camaron" fill="none" stroke="#d0d6e0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M0 8 C6 0 22 -2 34 2 C42 5 46 10 44 16" />
+              <path d="M2 10 C10 14 26 14 38 12" />
+              <path d="M12 2 L13 12 M20 0.5 L21 13 M28 1 L28 12.5" stroke-opacity="0.5" />
+              <path d="M44 16 l7 1 M44 16 l5 6 M44 16 l0 8" />
+              <path d="M2 7 C-10 2 -22 4 -32 10 M2 9 C-8 11 -16 16 -20 24" stroke-opacity="0.7" />
+              <path d="M10 12 l-2 6 M16 13 l-2 6 M22 13 l-1 6 M28 12 l0 6" stroke-opacity="0.6" />
+              <circle cx="5" cy="4.5" r="1.4" fill="#d0d6e0" stroke="none" />
+            </g>
+          </defs>
+
+          <!-- Agua -->
+          <rect x="0" y="100" width="1200" height="250" fill="url(#agua)" />
+          <path class="agua-sup lenta" d="M0 104 Q20 98 40 104 T80 104 T120 104 T160 104 T200 104 T240 104 T280 104 T320 104 T360 104 T400 104 T440 104 T480 104 T520 104 T560 104 T600 104 T640 104 T680 104 T720 104 T760 104 T800 104 T840 104 T880 104 T920 104 T960 104 T1000 104 T1040 104 T1080 104 T1120 104 T1160 104 T1200 104 T1240 104" fill="none" stroke="#02b8cc" stroke-opacity="0.25" stroke-width="1.5" />
+          <path class="agua-sup" d="M0 100 Q20 94 40 100 T80 100 T120 100 T160 100 T200 100 T240 100 T280 100 T320 100 T360 100 T400 100 T440 100 T480 100 T520 100 T560 100 T600 100 T640 100 T680 100 T720 100 T760 100 T800 100 T840 100 T880 100 T920 100 T960 100 T1000 100 T1040 100 T1080 100 T1120 100 T1160 100 T1200 100 T1240 100" fill="none" stroke="#02b8cc" stroke-opacity="0.6" stroke-width="1.5" />
+          <!-- Fondo -->
+          <path d="M0 350 C200 338 400 356 600 346 S1000 338 1200 348 V380 H0 Z" fill="#161718" />
+          <path d="M0 350 C200 338 400 356 600 346 S1000 338 1200 348" fill="none" stroke="#383b3f" />
+
+          <g data-parte="alimento">
+          <!-- Alimento cayendo al agua -->
+          <g fill="#e5e5e6">
+            <circle class="pellet" cx="520" cy="60" r="3" style="--d: 0s; --y: 200px" />
+            <circle class="pellet" cx="545" cy="50" r="2.5" style="--d: .6s; --y: 230px" />
+            <circle class="pellet" cx="570" cy="62" r="3" style="--d: 1.2s; --y: 210px" />
+            <circle class="pellet" cx="595" cy="55" r="2.5" style="--d: 1.8s; --y: 240px" />
+            <circle class="pellet" cx="620" cy="58" r="3" style="--d: 2.4s; --y: 220px" />
+          </g>
+          <line x1="570" y1="30" x2="570" y2="18" stroke="#383b3f" />
+          <text class="etiqueta" x="570" y="12" text-anchor="middle">alimento</text>
+          </g>
+
+          <g data-parte="charola">
+          <!-- Charola de muestreo -->
+          <line x1="260" y1="20" x2="260" y2="110" stroke="#62666d" stroke-width="3" />
+          <g class="charola">
+            <line x1="260" y1="40" x2="260" y2="236" stroke="#8a8f98" stroke-dasharray="3 4" />
+            <path d="M200 236 H320 L308 258 H212 Z" fill="#0f1011" stroke="#d0d6e0" stroke-width="1.5" />
+            <g fill="#e5e5e6">
+              <circle class="pellet" cx="240" cy="120" r="2.5" style="--d: .3s; --y: 128px" />
+              <circle class="pellet" cx="262" cy="118" r="2.5" style="--d: 1.4s; --y: 130px" />
+              <circle class="pellet" cx="284" cy="122" r="2.5" style="--d: 2.2s; --y: 126px" />
+            </g>
+            <circle cx="232" cy="246" r="2.5" fill="#e5e5e6" />
+            <circle cx="246" cy="248" r="2.5" fill="#e5e5e6" />
+            <circle cx="290" cy="247" r="2.5" fill="#e5e5e6" />
+          </g>
+          <line x1="200" y1="270" x2="160" y2="300" stroke="#383b3f" />
+          <text class="etiqueta" x="156" y="314" text-anchor="end">charola: % de sobrante</text>
+          </g>
+
+          <g data-parte="oxigeno">
+          <!-- Aireador y burbujas de oxígeno -->
+          <rect x="880" y="336" width="60" height="10" rx="3" fill="#23252a" stroke="#383b3f" />
+          <g fill="none" stroke="#02b8cc" stroke-opacity="0.8">
+            <circle class="burbuja" cx="890" cy="330" r="3" style="--d: 0s; --t: 4.2s; --x: -8px" />
+            <circle class="burbuja" cx="900" cy="330" r="4" style="--d: .7s; --t: 5s; --x: 10px" />
+            <circle class="burbuja" cx="910" cy="330" r="2.5" style="--d: 1.3s; --t: 3.8s; --x: -4px" />
+            <circle class="burbuja" cx="920" cy="330" r="3.5" style="--d: 2s; --t: 4.6s; --x: 12px" />
+            <circle class="burbuja" cx="930" cy="330" r="2.5" style="--d: 2.8s; --t: 4s; --x: -10px" />
+            <circle class="burbuja" cx="905" cy="330" r="2" style="--d: 3.4s; --t: 3.6s; --x: 6px" />
+          </g>
+          <line x1="878" y1="300" x2="830" y2="270" stroke="#383b3f" />
+          <text class="etiqueta" x="826" y="266" text-anchor="end">oxígeno disuelto (mg/L)</text>
+          </g>
+
+          <g data-parte="temperatura">
+          <!-- Termómetro -->
+          <g transform="translate(1090 40)">
+            <rect x="-5" y="0" width="10" height="120" rx="5" fill="#0f1011" stroke="#d0d6e0" stroke-width="1.5" />
+            <circle cx="0" cy="128" r="10" fill="#0f1011" stroke="#d0d6e0" stroke-width="1.5" />
+            <rect x="-2" y="50" width="4" height="78" rx="2" fill="#e2a336" />
+            <circle cx="0" cy="128" r="6" fill="#e2a336" />
+          </g>
+          <line x1="1082" y1="56" x2="1040" y2="40" stroke="#383b3f" />
+          <text class="etiqueta" x="1036" y="38" text-anchor="end">temperatura (°C)</text>
+          </g>
+
+          <!-- Camarones -->
+          <g class="camaron" style="--t: 16s; --dx: 160px"><use href="#camaron" transform="translate(380 290)" /></g>
+          <g class="camaron" style="--t: 12s; --dx: -140px; --d: -4s"><use href="#camaron" transform="translate(760 240) scale(0.8)" /></g>
+          <g class="camaron" style="--t: 19s; --dx: 120px; --d: -9s"><use href="#camaron" transform="translate(600 315) scale(0.9)" /></g>
+          <g class="camaron" style="--t: 14s; --dx: -100px; --d: -2s"><use href="#camaron" transform="translate(1000 300) scale(0.7)" /></g>
+        </svg>
+        </figure>
+        <ol class="escena-pasos" aria-label="Partes del estanque">
+          <li data-paso="alimento"><span class="step">01</span><p><strong>Alimento.</strong> Se reparte en el estanque según la dosis del día.</p></li>
+          <li data-paso="charola"><span class="step">02</span><p><strong>Charola de muestreo.</strong> Lo que sobra en ella dice si el camarón comió menos de lo que se le dio.</p></li>
+          <li data-paso="oxigeno"><span class="step">03</span><p><strong>Oxígeno disuelto.</strong> Con menos de 2.0 mg/L se suspende la alimentación.</p></li>
+          <li data-paso="temperatura"><span class="step">04</span><p><strong>Temperatura.</strong> Fuera de 24–33 °C el camarón come menos.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Problema -->
+    <section class="section" aria-labelledby="problema">
+      <p class="eyebrow mb-6" data-reveal>02 · EL PROBLEMA</p>
+      <h2 id="problema" class="texto-scroll" data-texto-scroll>El alimento es uno de los mayores costos de una granja. Si se da de más, se pierde y ensucia el agua. Si se da de menos, el camarón crece lento. Acuicontrol ajusta la dosis cada día con lo que de verdad pasa en el estanque.</h2>
+      <div class="mt-12 grid gap-6 lg:grid-cols-2" data-reveal-group>
+        <p class="text-[17px] leading-relaxed text-muted">
+          En muchas granjas la ración diaria se decide con tablas fijas o por experiencia, sin medir cuánto alimento
+          queda sin comer.
+        </p>
+        <p class="text-[17px] leading-relaxed text-muted">
+          El indicador que lo mide es el <strong class="text-paper font-medium">FCA</strong> (Factor de Conversión Alimenticia):
+          kilos de alimento por cada kilo de biomasa ganada. Mientras más bajo, más eficiente es la granja.
+        </p>
+      </div>
+    </section>
+
+    <!-- Cómo funciona -->
+    <section id="como-funciona" class="section grid gap-10 lg:grid-cols-[1fr_1.2fr]" aria-labelledby="flujo">
+      <div data-reveal class="lg:sticky lg:top-24 lg:self-start">
+        <p class="eyebrow mb-4">03 · CÓMO FUNCIONA</p>
+        <h2 id="flujo" class="section-title">Cuatro pasos, desde la orilla del estanque.</h2>
+        <a href="/" class="nav-link mt-4 -ml-3">Abrir la captura →</a>
+      </div>
+      <div class="timeline" id="timeline">
+        <span class="timeline-fill" aria-hidden="true"></span>
+        <ol class="space-y-10">
+        <li class="relative pl-12" data-reveal>
+          <span class="nodo" aria-hidden="true">1</span>
+          <h3 class="text-[20px] tracking-[-0.012em]">Elegir el estanque</h3>
+          <p class="text-muted mt-2">Cada estanque tiene su superficie, densidad de siembra y última biometría registrada.</p>
+        </li>
+        <li class="relative pl-12" data-reveal>
+          <span class="nodo" aria-hidden="true">2</span>
+          <h3 class="text-[20px] tracking-[-0.012em]">Capturar lecturas de campo</h3>
+          <p class="text-muted mt-2">Porcentaje de sobrante en las charolas, temperatura del agua y oxígeno disuelto. Mientras escribes, cada campo indica si va a reducir la dosis. Si un campo queda vacío se usa la última lectura guardada.</p>
+        </li>
+        <li class="relative pl-12" data-reveal>
+          <span class="nodo" aria-hidden="true">3</span>
+          <h3 class="text-[20px] tracking-[-0.012em]">Recibir la recomendación</h3>
+          <p class="text-muted mt-2">El sistema calcula la dosis en kg/día y explica en español por qué la ajustó. Es solo una vista previa: todavía no se guarda nada.</p>
+        </li>
+        <li class="relative pl-12" data-reveal>
+          <span class="nodo" aria-hidden="true">4</span>
+          <h3 class="text-[20px] tracking-[-0.012em]">Confirmar lo aplicado</h3>
+          <p class="text-muted mt-2">El técnico registra la dosis que realmente aplicó. Se guardan ambas, la calculada y la aplicada, para comparar después.</p>
+        </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Algoritmo -->
+    <section class="section grid gap-10 lg:grid-cols-2" aria-labelledby="algoritmo">
+      <div data-reveal>
+        <p class="eyebrow mb-4">04 · EL CÁLCULO</p>
+        <h2 id="algoritmo" class="section-title">Reglas zootécnicas explícitas, no una caja negra.</h2>
+        <p class="lead mt-6">
+          Cada recomendación se puede explicar paso a paso. Los factores de corrección se multiplican, así que la
+          dosis nunca supera la base ni baja de cero.
+        </p>
+        <div class="mt-8 space-y-3" data-reveal-group>
+          <p class="label !mb-0">1 · Biomasa</p>
+          <div class="formula">biomasa_kg = densidad × hectáreas × 10 000
+           × supervivencia (0.85) × peso_g / 1000</div>
+          <p class="label !mb-0 pt-2">2 · Dosis base</p>
+          <div class="formula">dosis_base = biomasa_kg × tasa_base(peso) / 100</div>
+          <p class="label !mb-0 pt-2">3 · Ajuste</p>
+          <div class="formula">dosis = dosis_base × f_sobrante × f_temperatura × f_oxígeno</div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="card card-hover !p-0 overflow-x-auto" data-reveal>
+          <table class="tabla">
+            <caption class="text-left px-3 pt-4 pb-2 text-paper font-medium">Factores de corrección</caption>
+            <thead><tr><th scope="col">Condición</th><th scope="col">Factor</th></tr></thead>
+            <tbody>
+              <tr class="estado-warn"><td><span class="dot"></span>Sobrante en charola &gt; 15 %</td><td class="mono">×0.90 – ×0.85</td></tr>
+              <tr class="estado-warn"><td><span class="dot"></span>Sobrante &gt; 30 % (crítico)</td><td class="mono">×0.70</td></tr>
+              <tr class="estado-warn"><td><span class="dot"></span>Temperatura fuera de 24–33 °C</td><td class="mono">×0.85</td></tr>
+              <tr class="estado-warn"><td><span class="dot"></span>Temperatura &lt; 20 °C o &gt; 35 °C</td><td class="mono">×0.60</td></tr>
+              <tr class="estado-warn"><td><span class="dot"></span>Oxígeno &lt; 3.5 mg/L</td><td class="mono">×0.50</td></tr>
+              <tr class="estado-danger"><td><span class="dot"></span>Oxígeno &lt; 2.0 mg/L: se suspende</td><td class="mono">×0</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card card-hover !p-0 overflow-x-auto" data-reveal style="--d: 100ms">
+          <table class="tabla">
+            <caption class="text-left px-3 pt-4 pb-2 text-paper font-medium">Tasa base y FCA de referencia por peso</caption>
+            <thead><tr><th scope="col">Peso promedio</th><th scope="col">Tasa base</th><th scope="col">FCA ref.</th></tr></thead>
+            <tbody class="mono">
+              <tr><td>&lt; 1 g</td><td>15 %</td><td>1.0</td></tr>
+              <tr><td>1 – 3 g</td><td>8 %</td><td>1.2</td></tr>
+              <tr><td>3 – 8 g</td><td>6 %</td><td>1.4</td></tr>
+              <tr><td>8 – 15 g</td><td>4.5 %</td><td>1.6</td></tr>
+              <tr><td>15 – 25 g</td><td>3.5 %</td><td>1.8</td></tr>
+              <tr><td>≥ 25 g</td><td>2.5 %</td><td>2.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simulador -->
+    <section id="simulador" class="section" aria-labelledby="sim-titulo">
+      <div data-reveal>
+        <p class="eyebrow mb-4">05 · PRUÉBALO</p>
+        <h2 id="sim-titulo" class="section-title max-w-[44rem]">Mueve las lecturas y mira cómo cambia la dosis.</h2>
+        <p class="lead mt-6 max-w-[44rem]">Mismas reglas que el backend, calculadas en tu navegador. No se guarda nada.</p>
+      </div>
+      <div class="mt-10 grid gap-4 lg:grid-cols-2">
+        <form id="sim-form" class="card space-y-6" data-reveal onsubmit="return false">
+          <p class="text-[13px] text-muted">Estanque de ejemplo: <span class="mono text-fg">1 ha · 20 camarones/m² · supervivencia 85 %</span></p>
+          <div>
+            <div class="flex items-baseline justify-between gap-3">
+              <label for="sim-peso" class="label !mb-0">Peso promedio</label>
+              <output for="sim-peso" class="num text-paper" data-out="peso">12.5 g</output>
+            </div>
+            <input id="sim-peso" class="rango" type="range" min="0.5" max="35" step="0.5" value="12.5" />
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between gap-3">
+              <label for="sim-sobrante" class="label !mb-0">Sobrante en charola<span class="chip" data-sim-chip="sobrante"></span></label>
+              <output for="sim-sobrante" class="num text-paper" data-out="sobrante">10 %</output>
+            </div>
+            <input id="sim-sobrante" class="rango" type="range" min="0" max="60" step="1" value="10" />
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between gap-3">
+              <label for="sim-temperatura" class="label !mb-0">Temperatura<span class="chip" data-sim-chip="temperatura"></span></label>
+              <output for="sim-temperatura" class="num text-paper" data-out="temperatura">28.0 °C</output>
+            </div>
+            <input id="sim-temperatura" class="rango" type="range" min="15" max="38" step="0.5" value="28" />
+          </div>
+          <div>
+            <div class="flex items-baseline justify-between gap-3">
+              <label for="sim-oxigeno" class="label !mb-0">Oxígeno disuelto<span class="chip" data-sim-chip="oxigeno"></span></label>
+              <output for="sim-oxigeno" class="num text-paper" data-out="oxigeno">5.0 mg/L</output>
+            </div>
+            <input id="sim-oxigeno" class="rango" type="range" min="0" max="8" step="0.1" value="5" />
+          </div>
+          <button type="button" id="sim-reset" class="btn btn-ghost">Restablecer</button>
+        </form>
+
+        <div id="sim-card" class="card result-card estado-ok" data-reveal style="--d: 100ms" aria-live="polite">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <p class="card-title !mb-0">Dosis recomendada</p>
+            <span class="badge" data-badge>Normal</span>
+          </div>
+          <p class="dosis-valor"><span data-dosis>0.00</span> <span class="text-lg text-muted">kg/día</span></p>
+          <div class="mt-4">
+            <div class="flex justify-between text-[12px] text-muted mb-1.5">
+              <span>Dosis base <span class="num" data-base>—</span></span>
+              <span data-reduccion>sin ajuste</span>
+            </div>
+            <div class="barra"><span data-barra style="--v: 1"></span></div>
+          </div>
+          <dl class="mt-6 space-y-3 text-[14px]">
+            <div class="estado-ok" data-factor="sobrante">
+              <div class="flex justify-between mb-1"><dt>Factor sobrante</dt><dd class="num" data-fval>×1.00</dd></div>
+              <div class="barra"><span style="--v: 1"></span></div>
+            </div>
+            <div class="estado-ok" data-factor="temperatura">
+              <div class="flex justify-between mb-1"><dt>Factor temperatura</dt><dd class="num" data-fval>×1.00</dd></div>
+              <div class="barra"><span style="--v: 1"></span></div>
+            </div>
+            <div class="estado-ok" data-factor="oxigeno">
+              <div class="flex justify-between mb-1"><dt>Factor oxígeno</dt><dd class="num" data-fval>×1.00</dd></div>
+              <div class="barra"><span style="--v: 1"></span></div>
+            </div>
+          </dl>
+          <dl class="metricas mt-6">
+            <div class="metrica"><dt>Biomasa estimada</dt><dd data-biomasa>—</dd></div>
+            <div class="metrica"><dt>Tasa base · FCA ref.</dt><dd data-tasa>—</dd></div>
+          </dl>
+          <p class="mt-4 text-[15px] leading-relaxed" data-just></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Glosario -->
+    <section class="section" aria-labelledby="glosario">
+      <div data-reveal>
+        <p class="eyebrow mb-4">06 · GLOSARIO</p>
+        <h2 id="glosario" class="section-title">Términos del dominio.</h2>
+      </div>
+      <dl class="mt-10 card !p-0 divide-y divide-line" data-reveal-group>
+        <div class="p-5 grid gap-1 md:grid-cols-[200px_1fr]"><dt class="text-paper">Estanque</dt><dd class="text-muted">Unidad de cultivo donde se siembra y engorda el camarón.</dd></div>
+        <div class="p-5 grid gap-1 md:grid-cols-[200px_1fr]"><dt class="text-paper">Charola de muestreo</dt><dd class="text-muted">Bandeja sumergida con una porción del alimento; el sobrante indica si el camarón está comiendo menos de lo que se le da.</dd></div>
+        <div class="p-5 grid gap-1 md:grid-cols-[200px_1fr]"><dt class="text-paper">Biometría</dt><dd class="text-muted">Muestreo periódico del peso promedio del camarón.</dd></div>
+        <div class="p-5 grid gap-1 md:grid-cols-[200px_1fr]"><dt class="text-paper">Biomasa</dt><dd class="text-muted">Peso total estimado de camarón vivo en el estanque.</dd></div>
+        <div class="p-5 grid gap-1 md:grid-cols-[200px_1fr]"><dt class="text-paper">FCA</dt><dd class="text-muted">Factor de Conversión Alimenticia: kg de alimento ÷ kg de biomasa ganada.</dd></div>
+        <div class="p-5 grid gap-1 md:grid-cols-[200px_1fr]"><dt class="text-paper">Oxígeno disuelto</dt><dd class="text-muted">mg/L de oxígeno en el agua. Por debajo de 2.0 mg/L el camarón no asimila el alimento y alimentar empeora la calidad del agua.</dd></div>
+      </dl>
+    </section>
+
+    <!-- Tecnología y alcance -->
+    <section class="section grid gap-10 lg:grid-cols-2" aria-labelledby="tecnologia">
+      <div data-reveal>
+        <p class="eyebrow mb-4">07 · TECNOLOGÍA</p>
+        <h2 id="tecnologia" class="section-title">Simple de instalar, fácil de auditar.</h2>
+        <ul class="mt-8 space-y-4" data-reveal-group>
+          <li><span class="tag">Backend</span><p class="mt-1">FastAPI (Python) con validación Pydantic y documentación automática en <span class="mono text-[14px]">/docs</span>.</p></li>
+          <li><span class="tag">Datos</span><p class="mt-1">SQLite con esquema SQL escrito a mano, sin ORM.</p></li>
+          <li><span class="tag">Frontend</span><p class="mt-1">HTML, Tailwind y JavaScript sin paso de compilación, servido por el mismo proceso.</p></li>
+          <li><span class="tag">Lógica</span><p class="mt-1">Recomendador como función pura, probado con pytest de forma aislada.</p></li>
+        </ul>
+      </div>
+      <div data-reveal style="--d: 100ms">
+        <p class="eyebrow mb-4">08 · ALCANCE DE LA v1</p>
+        <h2 class="section-title">Lo que falta.</h2>
+        <ul class="mt-8 card !p-0 divide-y divide-line text-[15px]">
+          <li class="p-4">La supervivencia es una constante (85 %); todavía no se registra la mortalidad.</li>
+          <li class="p-4">El FCA es una heurística por peso, no un modelo entrenado con datos históricos.</li>
+          <li class="p-4">Sin cuentas de usuario ni autenticación.</li>
+          <li class="p-4">Aún no se instala como app ni funciona sin conexión.</li>
+          <li class="p-4">Solo SQLite; la migración a PostgreSQL está planeada.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Equipo -->
+    <section class="section" aria-labelledby="equipo">
+      <div data-reveal>
+        <p class="eyebrow mb-4">09 · EQUIPO</p>
+        <h2 id="equipo" class="section-title">Quiénes lo hicimos.</h2>
+      </div>
+      <ul class="mt-10 card !p-0 divide-y divide-line" data-reveal-group>
+        <li class="p-5 flex items-center gap-4"><span class="iniciales">AF</span><span class="text-paper">Aguilar Félix Jesús Antonio</span></li>
+        <li class="p-5 flex items-center gap-4"><span class="iniciales">JL</span><span class="text-paper">José Luiz López Bojórquez</span></li>
+        <li class="p-5 flex items-center gap-4"><span class="iniciales">KC</span><span class="text-paper">Kevin Jesús Cázarez Lara</span></li>
+        <li class="p-5 flex items-center gap-4"><span class="iniciales">MO</span><span class="text-paper">Manjarrez Oliva Mariana</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="border-t border-line">
+    <div class="max-w-[1200px] mx-auto px-4 py-8 flex flex-wrap items-center justify-between gap-3 text-[13px] text-muted">
+      <span>Acuicontrol · v1</span>
+      <a href="/docs" class="hover:text-paper">Documentación de la API →</a>
+    </div>
+  </footer>
+
+  <script src="/js/anim.js"></script>
+  <script src="/js/reglas.js"></script>
+  <script src="/js/proyecto.js"></script>
+</body>
+</html>

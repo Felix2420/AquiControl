@@ -1,0 +1,964 @@
+{
+  "id": "a4085e30-dd8f-48ad-b961-09dbac64764d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.account": {
+      "name": "account",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
+          "tableFrom": "account",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.alimentacion_diaria": {
+      "name": "alimentacion_diaria",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "estanque_id": {
+          "name": "estanque_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dosis_calculada_kg": {
+          "name": "dosis_calculada_kg",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dosis_aplicada_kg": {
+          "name": "dosis_aplicada_kg",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fca_proyectado": {
+          "name": "fca_proyectado",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "explicacion_ia": {
+          "name": "explicacion_ia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "client_id": {
+          "name": "client_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_alimentacion_estanque": {
+          "name": "idx_alimentacion_estanque",
+          "columns": [
+            {
+              "expression": "estanque_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "fecha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "alimentacion_diaria_estanque_id_estanques_id_fk": {
+          "name": "alimentacion_diaria_estanque_id_estanques_id_fk",
+          "tableFrom": "alimentacion_diaria",
+          "tableTo": "estanques",
+          "columnsFrom": [
+            "estanque_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "alimentacion_diaria_client_id_unique": {
+          "name": "alimentacion_diaria_client_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "client_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.estanques": {
+      "name": "estanques",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "granja_id": {
+          "name": "granja_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "identificador_estanque": {
+          "name": "identificador_estanque",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hectareas": {
+          "name": "hectareas",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "densidad_siembra": {
+          "name": "densidad_siembra",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha_siembra": {
+          "name": "fecha_siembra",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_estanques_granja": {
+          "name": "idx_estanques_granja",
+          "columns": [
+            {
+              "expression": "granja_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "estanques_granja_id_granjas_id_fk": {
+          "name": "estanques_granja_id_granjas_id_fk",
+          "tableFrom": "estanques",
+          "tableTo": "granjas",
+          "columnsFrom": [
+            "granja_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "estanques_granja_identificador_uq": {
+          "name": "estanques_granja_identificador_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "granja_id",
+            "identificador_estanque"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "estanques_hectareas_pos": {
+          "name": "estanques_hectareas_pos",
+          "value": "\"estanques\".\"hectareas\" > 0"
+        },
+        "estanques_densidad_pos": {
+          "name": "estanques_densidad_pos",
+          "value": "\"estanques\".\"densidad_siembra\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.granja_miembros": {
+      "name": "granja_miembros",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "granja_id": {
+          "name": "granja_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rol": {
+          "name": "rol",
+          "type": "rol_granja",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_miembros_user": {
+          "name": "idx_miembros_user",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "granja_miembros_user_id_user_id_fk": {
+          "name": "granja_miembros_user_id_user_id_fk",
+          "tableFrom": "granja_miembros",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "granja_miembros_granja_id_granjas_id_fk": {
+          "name": "granja_miembros_granja_id_granjas_id_fk",
+          "tableFrom": "granja_miembros",
+          "tableTo": "granjas",
+          "columnsFrom": [
+            "granja_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "granja_miembros_uq": {
+          "name": "granja_miembros_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id",
+            "granja_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.granjas": {
+      "name": "granjas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ubicacion": {
+          "name": "ubicacion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hectareas_totales": {
+          "name": "hectareas_totales",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha_registro": {
+          "name": "fecha_registro",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_DATE"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "granjas_hectareas_totales_pos": {
+          "name": "granjas_hectareas_totales_pos",
+          "value": "\"granjas\".\"hectareas_totales\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.lecturas_charolas": {
+      "name": "lecturas_charolas",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "estanque_id": {
+          "name": "estanque_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hora_toma": {
+          "name": "hora_toma",
+          "type": "hora_toma",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "porcentaje_sobrante": {
+          "name": "porcentaje_sobrante",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ajuste_realizado_kg": {
+          "name": "ajuste_realizado_kg",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_charolas_estanque": {
+          "name": "idx_charolas_estanque",
+          "columns": [
+            {
+              "expression": "estanque_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "fecha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "lecturas_charolas_estanque_id_estanques_id_fk": {
+          "name": "lecturas_charolas_estanque_id_estanques_id_fk",
+          "tableFrom": "lecturas_charolas",
+          "tableTo": "estanques",
+          "columnsFrom": [
+            "estanque_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "charolas_sobrante_rango": {
+          "name": "charolas_sobrante_rango",
+          "value": "\"lecturas_charolas\".\"porcentaje_sobrante\" BETWEEN 0 AND 100"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.muestreos_biometria": {
+      "name": "muestreos_biometria",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "estanque_id": {
+          "name": "estanque_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "peso_promedio_g": {
+          "name": "peso_promedio_g",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ganancia_semanal_g": {
+          "name": "ganancia_semanal_g",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "biomasa_estimada_kg": {
+          "name": "biomasa_estimada_kg",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_biometria_estanque": {
+          "name": "idx_biometria_estanque",
+          "columns": [
+            {
+              "expression": "estanque_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "fecha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "muestreos_biometria_estanque_id_estanques_id_fk": {
+          "name": "muestreos_biometria_estanque_id_estanques_id_fk",
+          "tableFrom": "muestreos_biometria",
+          "tableTo": "estanques",
+          "columnsFrom": [
+            "estanque_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "biometria_peso_pos": {
+          "name": "biometria_peso_pos",
+          "value": "\"muestreos_biometria\".\"peso_promedio_g\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.parametros_agua": {
+      "name": "parametros_agua",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "estanque_id": {
+          "name": "estanque_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fecha": {
+          "name": "fecha",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "temperatura_c": {
+          "name": "temperatura_c",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "oxigeno_mg_l": {
+          "name": "oxigeno_mg_l",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "salinidad_ppm": {
+          "name": "salinidad_ppm",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ph": {
+          "name": "ph",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "amonio_ppm": {
+          "name": "amonio_ppm",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "idx_agua_estanque": {
+          "name": "idx_agua_estanque",
+          "columns": [
+            {
+              "expression": "estanque_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "fecha",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "parametros_agua_estanque_id_estanques_id_fk": {
+          "name": "parametros_agua_estanque_id_estanques_id_fk",
+          "tableFrom": "parametros_agua",
+          "tableTo": "estanques",
+          "columnsFrom": [
+            "estanque_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "agua_oxigeno_nonneg": {
+          "name": "agua_oxigeno_nonneg",
+          "value": "\"parametros_agua\".\"oxigeno_mg_l\" IS NULL OR \"parametros_agua\".\"oxigeno_mg_l\" >= 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.session": {
+      "name": "session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
+          "tableFrom": "session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "session_token_unique": {
+          "name": "session_token_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "token"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user": {
+      "name": "user",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_email_unique": {
+          "name": "user_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.verification": {
+      "name": "verification",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.hora_toma": {
+      "name": "hora_toma",
+      "schema": "public",
+      "values": [
+        "mañana",
+        "tarde"
+      ]
+    },
+    "public.rol_granja": {
+      "name": "rol_granja",
+      "schema": "public",
+      "values": [
+        "admin",
+        "biologo",
+        "tecnico"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

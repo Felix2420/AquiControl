@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#08090a" />
+  <title>Acuicontrol · Captura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>document.documentElement.classList.add("js");</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/tw-config.js"></script>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body class="min-h-dvh antialiased">
+  <a href="#contenido" class="skip-link">Saltar al contenido</a>
+
+  <header class="topbar">
+    <nav class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between gap-3" aria-label="Principal">
+      <a href="/" class="logo">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+          <path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+          <path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+        </svg>
+        Acuicontrol
+      </a>
+      <div class="flex items-center gap-1">
+        <a href="/" class="nav-link" aria-current="page">Captura</a>
+        <a href="/proyecto.html" class="nav-link">Proyecto</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="contenido" class="max-w-xl mx-auto px-4 py-8 space-y-3">
+    <div class="pb-3" data-reveal>
+      <p class="eyebrow mb-3" id="fecha-hoy">HOY</p>
+      <h1 class="text-[32px] leading-[1.13] tracking-[-0.022em]">Dosis del día</h1>
+      <p class="text-muted mt-2">Captura las lecturas de campo y obtén la dosis de alimento recomendada.</p>
+      <svg class="ola mt-5" viewBox="0 0 400 14" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 7 Q10 1 20 7 T40 7 T60 7 T80 7 T100 7 T120 7 T140 7 T160 7 T180 7 T200 7 T220 7 T240 7 T260 7 T280 7 T300 7 T320 7 T340 7 T360 7 T380 7 T400 7 T420 7 T440 7" fill="none" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+    </div>
+
+    <!-- 1. Estanque -->
+    <section class="card card-hover" aria-labelledby="paso-1" data-reveal>
+      <h2 id="paso-1" class="card-title"><span class="step">01</span>Estanque</h2>
+      <label for="estanque-select" class="sr-only">Estanque</label>
+      <select id="estanque-select" class="field" disabled>
+        <option>Cargando estanques…</option>
+      </select>
+    </section>
+
+    <!-- 2. Lecturas -->
+    <section class="card card-hover" aria-labelledby="paso-2" data-reveal style="--d: 80ms">
+      <h2 id="paso-2" class="card-title"><span class="step">02</span>Lecturas de campo</h2>
+      <form id="captura-form" class="space-y-5" novalidate>
+        <div>
+          <label for="porcentaje_sobrante" class="label">Sobrante en charola <span class="unit">%</span><span class="chip" data-chip="porcentaje_sobrante" aria-live="polite"></span></label>
+          <input id="porcentaje_sobrante" type="number" inputmode="decimal" step="0.1" min="0" max="100"
+                 class="field num" aria-describedby="porcentaje_sobrante-ayuda" />
+          <p id="porcentaje_sobrante-ayuda" class="help" data-ayuda="Entre 0 y 100.">Entre 0 y 100.</p>
+        </div>
+        <div>
+          <label for="temperatura_c" class="label">Temperatura <span class="unit">°C</span><span class="chip" data-chip="temperatura_c" aria-live="polite"></span></label>
+          <input id="temperatura_c" type="number" inputmode="decimal" step="0.1" min="0" max="45"
+                 class="field num" aria-describedby="temperatura_c-ayuda" />
+          <p id="temperatura_c-ayuda" class="help" data-ayuda="Rango óptimo: 24 a 33 °C.">Rango óptimo: 24 a 33 °C.</p>
+        </div>
+        <div>
+          <label for="oxigeno_mg_l" class="label">Oxígeno disuelto <span class="unit">mg/L</span><span class="chip" data-chip="oxigeno_mg_l" aria-live="polite"></span></label>
+          <input id="oxigeno_mg_l" type="number" inputmode="decimal" step="0.1" min="0" max="20"
+                 class="field num" aria-describedby="oxigeno_mg_l-ayuda" />
+          <p id="oxigeno_mg_l-ayuda" class="help" data-ayuda="Menos de 2.0 mg/L suspende la alimentación.">Menos de 2.0 mg/L suspende la alimentación.</p>
+        </div>
+        <p class="text-[13px] text-muted">Deja un campo vacío para usar la última lectura registrada del estanque.</p>
+
+        <button id="calcular-btn" type="submit" class="btn btn-accent">
+          <span class="spinner hidden" aria-hidden="true"></span>
+          <span class="btn-label">Calcular recomendación</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- 3. Recomendación -->
+    <section id="resultado" class="card hidden" aria-labelledby="paso-3" aria-live="polite"></section>
+
+    <!-- 4. Confirmar -->
+    <section id="confirmar" class="card hidden" aria-labelledby="paso-4">
+      <h2 id="paso-4" class="card-title"><span class="step">04</span>Confirmar dosis</h2>
+      <label for="dosis_aplicada_kg" class="label">Dosis aplicada <span class="unit">kg</span></label>
+      <input id="dosis_aplicada_kg" type="number" inputmode="decimal" step="0.01" min="0"
+             class="field num" aria-describedby="dosis_aplicada_kg-ayuda" />
+      <p id="dosis_aplicada_kg-ayuda" class="help" data-ayuda="Ajusta si aplicaste una cantidad distinta a la recomendada.">Ajusta si aplicaste una cantidad distinta a la recomendada.</p>
+
+      <label id="confirmar-suspension" class="hidden mt-4 flex items-start gap-3 text-[15px] cursor-pointer">
+        <input id="confirmar-suspension-check" type="checkbox" class="mt-1 w-5 h-5 accent-[var(--danger)]" />
+        <span>Entiendo que el oxígeno está por debajo de 2.0 mg/L y aun así quiero registrar esta dosis.</span>
+      </label>
+
+      <button id="registrar-btn" type="button" disabled class="btn btn-bone mt-5">
+        <span class="spinner hidden" aria-hidden="true"></span>
+        <span class="btn-label">Registrar dosis aplicada</span>
+      </button>
+    </section>
+
+    <!-- Historial -->
+    <section class="card card-hover" aria-labelledby="historial-titulo" data-reveal style="--d: 160ms">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <h2 id="historial-titulo" class="card-title !mb-0">Últimas dosis registradas</h2>
+        <span class="text-[12px] text-muted">aplicada · recomendada</span>
+      </div>
+      <ul id="historial" class="divide-y divide-line">
+        <li class="py-2 text-muted text-sm">Selecciona un estanque.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="/js/anim.js"></script>
+  <script src="/js/reglas.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

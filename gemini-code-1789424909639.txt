@@ -1,0 +1,57 @@
+Actúa como un Arquitecto de Software Full-Stack Senior y Científico de Datos experto en soluciones zootécnicas y acuícolas. 
+
+Tu objetivo es diseñar la arquitectura, el modelo de datos, la API backend y el código base inicial para "Acuicontrol", una plataforma web progresiva (PWA) de gestión inteligente de dosis de alimentación camaronícola y optimización del Factor de Conversión Alimenticia (FCA), sin necesidad de hardware IoT.
+
+---
+
+### 1. CONTEXTO DEL DOMINIO Y PROBLEMA
+- El costo del alimento balanceado (pellet) representa entre el 50% y 70% de los costos operativos en las granjas de camarón.
+- Los técnicos y biólogos de campo miden la alimentación utilizando charolas de muestreo, atarrayas y lecturas básicas de agua (temperatura, oxígeno, salinidad, turbidez).
+- El problema principal es la sobrealimentación, que incrementa el FCA y contamina el fondo del estanque generando amonio y nitritos nocivos.
+- Acuicontrol procesa datos empíricos de campo (sobrante en charolas, biometría, parámetros físico-químicos) mediante modelos zootécnicos y algoritmos de analítica predictiva/Machine Learning para sugerir el ajuste de dosis diaria exacto, justificando cada recomendación de forma explicable.
+
+---
+
+### 2. REQUERIMIENTOS TÉCNICOS & TECH STACK
+- Frontend: Web App responsive adaptable a dispositivos móviles a pie de estanque (HTML5, Tailwind CSS, JavaScript moderno / React o Vue). Interfaz limpia, accesible y de alto contraste.
+- Backend: RESTful API robusta y ligera (Python con FastAPI / Flask o Node.js con Express/PHP moderno).
+- Base de Datos: Relacional SQL (PostgreSQL o SQLite para desarrollo), diseñada para series temporales de mediciones por estanque.
+- Módulo de IA / Motor Zootécnico: Modelo en Python (Scikit-learn / XGBoost / Reglas zootécnicas explícitas) que tome como input los datos del estanque y retorne la dosis sugerida (kg/día) junto con la métrica MAE (Mean Absolute Error) y la explicación zootécnica.
+
+---
+
+### 3. MODELO DE DATOS Y ENTIDADES (DB SCHEMA)
+Por favor, genera las sentencias SQL (DDL) normalizadas con las siguientes tablas clave:
+1. `granjas`: ID, nombre, ubicación (ej. Sinaloa), hectáreas totales, fecha_registro.
+2. `estanques`: ID, granja_id, identificador_estanque, hectareas, densidad_siembra (organismos/m2), fecha_siembra.
+3. `muestreos_biometria`: ID, estanque_id, fecha, peso_promedio_g, ganancia_semanal_g, biomasa_estimada_kg.
+4. `lecturas_charolas`: ID, estanque_id, fecha, hora_toma (mañana/tarde), porcentaje_sobrante (%), ajuste_realizado_kg.
+5. `parametros_agua`: ID, estanque_id, fecha, temperatura_c, oxigeno_mg_l, salinidad_ppm, ph, amonio_ppm.
+6. `alimentacion_diaria`: ID, estanque_id, fecha, dosis_calculada_kg, dosis_aplicada_kg, fca_proyectado, explicacion_ia.
+
+---
+
+### 4. ALGORITMO DE DOSIFICACIÓN E IA EXPLICABLE
+Escribe un módulo/función en Python (`dose_recommender.py`) que contenga la lógica para:
+1. Calcular la biomasa actual estimada: `Biomasa (kg) = (Densidad siembra * Hectáreas * 10,000 * Supervivencia estimada) * (Peso promedio / 1000)`.
+2. Calcular la tasa de alimentación base (% de la biomasa según peso promedio del camarón).
+3. Aplicar factores de corrección empíricos e IA:
+   - Penalización por Sobrante en Charola (>15% sobrante -> reducir dosis 10%-15%).
+   - Penalización por Temperatura fuera de rango (ej. < 24°C o > 33°C -> reducir ración).
+   - Penalización por Oxígeno Disuelto Bajo (< 3.5 mg/L -> suspensión o reducción crítica).
+4. Retornar un objeto JSON con:
+   - `dosis_recomendada_kg`: Valor numérico.
+   - `fca_estimado`: Valor numérico.
+   - `justificacion`: Texto explicativo amigable para el biólogo (ej. "Dosis reducida en 12% debido a 18% de sobrante en charola matutina y temperatura de 31.5°C").
+
+---
+
+### 5. ARQUITECTURA DEL PROYECTO Y ARCHIVOS A GENERAR
+Entrégame una propuesta completa con:
+1. Estructura de carpetas del proyecto.
+2. Script SQL de creación de la Base de Datos.
+3. El código del backend (API Endpoints para registrar muestreos y solicitar recomendaciones de dosis).
+4. El script en Python del módulo de lógica de dosificación/IA.
+5. Un prototipo de interfaz frontend (HTML + Tailwind CSS) responsiva con un formulario para captura rápida de charola/agua y visualización de la recomendación devuelta por el sistema.
+
+Comienza mostrando la arquitectura global y luego avanza paso a paso con los bloques de código bien comentados y listos para producción.

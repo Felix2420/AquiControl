@@ -1,0 +1,35 @@
+# NOTA: escrito pero sin probar (Docker no está instalado en la máquina de desarrollo).
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: acuicontrol
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d acuicontrol"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/acuicontrol
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?define BETTER_AUTH_SECRET en .env}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://localhost:8000}
+      PORT: 8000
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
