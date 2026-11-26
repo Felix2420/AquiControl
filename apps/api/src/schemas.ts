@@ -5,10 +5,14 @@ import { z } from "zod";
 
 const fecha = z.iso.date();
 const opt = <T extends z.ZodType>(s: T) => s.nullish().transform((v) => v ?? null);
+const latitud = opt(z.number().min(-90).max(90));
+const longitud = opt(z.number().min(-180).max(180));
 
 export const GranjaCreate = z.object({
   nombre: z.string().min(1),
   ubicacion: opt(z.string()),
+  latitud,
+  longitud,
   hectareas_totales: z.number().gt(0),
 });
 
@@ -18,6 +22,8 @@ export const EstanqueCreate = z.object({
   hectareas: z.number().gt(0),
   densidad_siembra: z.number().gt(0),
   fecha_siembra: fecha,
+  latitud,
+  longitud,
 });
 
 export const BiometriaCreate = z.object({

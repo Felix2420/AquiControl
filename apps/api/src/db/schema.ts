@@ -75,12 +75,18 @@ export const granjas = pgTable(
     id: serial("id").primaryKey(),
     nombre: text("nombre").notNull(),
     ubicacion: text("ubicacion"),
+    /** Coordenadas (WGS84) elegidas en el mapa; opcionales. */
+    latitud: doublePrecision("latitud"),
+    longitud: doublePrecision("longitud"),
     hectareas_totales: doublePrecision("hectareas_totales").notNull(),
     fecha_registro: date("fecha_registro", { mode: "string" })
       .notNull()
       .default(sql`CURRENT_DATE`),
   },
-  (t) => [check("granjas_hectareas_totales_pos", sql`${t.hectareas_totales} > 0`)],
+  (t) => [
+    check("granjas_hectareas_totales_pos", sql`${t.hectareas_totales} > 0`),
+    check("granjas_coordenadas_rango", sql`(${t.latitud} IS NULL OR ${t.latitud} BETWEEN -90 AND 90) AND (${t.longitud} IS NULL OR ${t.longitud} BETWEEN -180 AND 180)`),
+  ],
 );
 
 export const rolGranja = pgEnum("rol_granja", ["admin", "biologo", "tecnico"]);
@@ -110,8 +116,11 @@ export const estanques = pgTable(
     hectareas: doublePrecision("hectareas").notNull(),
     densidad_siembra: doublePrecision("densidad_siembra").notNull(),
     fecha_siembra: date("fecha_siembra", { mode: "string" }).notNull(),
+    latitud: doublePrecision("latitud"),
+    longitud: doublePrecision("longitud"),
   },
   (t) => [
+    check("estanques_coordenadas_rango", sql`(${t.latitud} IS NULL OR ${t.latitud} BETWEEN -90 AND 90) AND (${t.longitud} IS NULL OR ${t.longitud} BETWEEN -180 AND 180)`),
     unique("estanques_granja_identificador_uq").on(t.granja_id, t.identificador_estanque),
     check("estanques_hectareas_pos", sql`${t.hectareas} > 0`),
     check("estanques_densidad_pos", sql`${t.densidad_siembra} > 0`),

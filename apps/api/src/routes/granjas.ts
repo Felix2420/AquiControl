@@ -1,9 +1,18 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { exigirRolEnGranja, idParam, type Env } from "../access";
 import type { Db } from "../db/client";
-import { granja_miembros, granjas, user } from "../db/schema";
+import {
+  alimentacion_diaria,
+  estanques,
+  granja_miembros,
+  granjas,
+  lecturas_charolas,
+  muestreos_biometria,
+  parametros_agua,
+  user,
+} from "../db/schema";
 import { GranjaCreate, MiembroUpsert, json } from "../schemas";
 
 export function granjasRoutes(db: Db) {
@@ -76,6 +85,26 @@ export function granjasRoutes(db: Db) {
     const userId = c.req.param("userId");
     if (userId === actual.id) throw new HTTPException(422, { message: "No puedes quitarte a ti mismo" });
     await db.delete(granja_miembros).where(and(eq(granja_miembros.granja_id, id), eq(granja_miembros.user_id, userId)));
+    return c.body(null, 204);
+  });
+
+  // Elimina la granja con sus estanques, historial y miembros. Solo el admin; es irreversible.
+  app.delete("/:id", async (c) => {
+    const id = idParam(c.req.param("id"));
+    await exigirRolEnGranja(db, c.get("usuario").id, id, "admin", "Granja no encontrada");
+    await db.transaction(async (tx) => {
+      const ests = await tx.select({ id: estanques.id }).from(estanques).where(eq(estanques.granja_id, id));
+      const ids = ests.map((e) => e.id);
+      if (ids.length > 0) {
+        await tx.delete(alimentacion_diaria).where(inArray(alimentacion_diaria.estanque_id, ids));
+        await tx.delete(parametros_agua).where(inArray(parametros_agua.estanque_id, ids));
+        await tx.delete(lecturas_charolas).where(inArray(lecturas_charolas.estanque_id, ids));
+        await tx.delete(muestreos_biometria).where(inArray(muestreos_biometria.estanque_id, ids));
+        await tx.delete(estanques).where(eq(estanques.granja_id, id));
+      }
+      await tx.delete(granja_miembros).where(eq(granja_miembros.granja_id, id));
+      await tx.delete(granjas).where(eq(granjas.id, id));
+    });
     return c.body(null, 204);
   });
 

@@ -557,3 +557,12 @@ select.field option { background: var(--surface); color: var(--paper); }
   .escena-pasos li { position: static; opacity: 1; transform: none; filter: none; }
   .texto-scroll .w { color: var(--paper); }
 }
+
+/* Mapa de ubicación (Leaflet) */
+.mapa { background: #1a1d21; }
+.mapa .leaflet-control-layers, .mapa .leaflet-bar a { font-family: inherit; }
+.pin { display: block; width: 22px; height: 22px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 2px solid #0b0d0f; box-shadow: 0 2px 6px rgb(0 0 0 / 0.5); }
+.pin-granja { background: #e4f222; }
+.pin-estanque { background: #5eead4; }
+.mapa .leaflet-tooltip { background: #0b0d0f; color: #f4f5f6; border: 1px solid rgb(255 255 255 / 0.18); box-shadow: none; font-size: 12px; }
+.mapa .leaflet-tooltip-top:before { border-top-color: #0b0d0f; }

@@ -57,6 +57,43 @@ describe("flujo completo", () => {
     expect((await r.json()).detail).toBeDefined();
   });
 
+  it("guarda las coordenadas de granja y estanque, y rechaza valores fuera de rango", async () => {
+    const g = await (
+      await llamar("ana", "POST", "/api/granjas", { nombre: "Con mapa", hectareas_totales: 5, latitud: 24.8091, longitud: -107.394 })
+    ).json();
+    expect(g.latitud).toBe(24.8091);
+    expect(g.longitud).toBe(-107.394);
+    // Sin coordenadas quedan en null.
+    const sin = await (await llamar("ana", "POST", "/api/granjas", { nombre: "Sin mapa", hectareas_totales: 5 })).json();
+    expect(sin.latitud).toBeNull();
+    const fuera = await llamar("ana", "POST", "/api/granjas", { nombre: "Mal", hectareas_totales: 5, latitud: 95, longitud: 0 });
+    expect(fuera.status).toBe(422);
+    const e = await llamar("ana", "POST", "/api/estanques", {
+      granja_id: g.id,
+      identificador_estanque: "M1",
+      hectareas: 1,
+      densidad_siembra: 20,
+      fecha_siembra: "2026-06-01",
+      latitud: 24.81,
+      longitud: -107.39,
+    });
+    expect(e.status).toBe(201);
+    expect((await e.json()).longitud).toBe(-107.39);
+  });
+
+  it("elimina una granja con sus datos; solo el admin puede", async () => {
+    const g = await (await llamar("ana", "POST", "/api/granjas", { nombre: "Temporal", hectareas_totales: 3 })).json();
+    const e = await (
+      await llamar("ana", "POST", "/api/estanques", { granja_id: g.id, identificador_estanque: "T1", hectareas: 1, densidad_siembra: 10, fecha_siembra: "2026-06-01" })
+    ).json();
+    await llamar("ana", "POST", `/api/estanques/${e.id}/biometria`, { fecha: "2026-06-10", peso_promedio_g: 2 });
+    // Un ajeno recibe 404 y no borra nada.
+    expect((await llamar("beto", "DELETE", `/api/granjas/${g.id}`)).status).toBe(404);
+    expect((await llamar("ana", "DELETE", `/api/granjas/${g.id}`)).status).toBe(204);
+    expect((await llamar("ana", "GET", `/api/granjas/${g.id}`)).status).toBe(404);
+    expect((await llamar("ana", "GET", `/api/estanques/${e.id}/alimentacion`)).status).toBe(404);
+  });
+
   it("crea estanque y rechaza identificador duplicado con 409", async () => {
     const cuerpo = {
       granja_id: granjaId,

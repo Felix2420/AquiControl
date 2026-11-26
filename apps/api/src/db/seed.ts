@@ -5,7 +5,7 @@
 //      pnpm seed -- --reset (borra la granja demo y la vuelve a crear)
 import "../env";
 import { recomendarDosis } from "@acuicontrol/reglas";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { crearAuth } from "../auth";
 import { conectar, type Db } from "./client";
 import {
@@ -57,32 +57,44 @@ interface PlanEstanque {
   /** Día (hace N días) con sobrante alto y día con oxígeno bajo, para que el historial tenga estados distintos. */
   sobranteAltoHace?: number;
   oxigenoBajoHace?: number;
+  /** Posición del estanque en el mapa. */
+  lat: number;
+  lng: number;
   /** Sobrante de la última lectura (el que ve la recomendación de hoy). */
   sobranteHoy: number;
 }
 
 const PLAN: PlanEstanque[] = [
-  { id: "E1", hectareas: 1.0, densidad: 20, diasDesdeSiembra: 120, pesos: [8.0, 9.4, 10.7, 11.7, 12.5], sobranteAltoHace: 9, sobranteHoy: 6 },
-  { id: "E2", hectareas: 0.8, densidad: 28, diasDesdeSiembra: 50, pesos: [1.8, 2.6, 3.3, 3.9, 4.5], sobranteHoy: 4 },
-  { id: "E3", hectareas: 1.5, densidad: 15, diasDesdeSiembra: 150, pesos: [16.5, 18.2, 19.9, 21.1, 22.4], oxigenoBajoHace: 5, sobranteHoy: 18 },
+  { id: "E1", lat: 24.8102, lng: -107.3961, hectareas: 1.0, densidad: 20, diasDesdeSiembra: 120, pesos: [8.0, 9.4, 10.7, 11.7, 12.5], sobranteAltoHace: 9, sobranteHoy: 6 },
+  { id: "E2", lat: 24.8086, lng: -107.3922, hectareas: 0.8, densidad: 28, diasDesdeSiembra: 50, pesos: [1.8, 2.6, 3.3, 3.9, 4.5], sobranteHoy: 4 },
+  { id: "E3", lat: 24.8071, lng: -107.3957, hectareas: 1.5, densidad: 15, diasDesdeSiembra: 150, pesos: [16.5, 18.2, 19.9, 21.1, 22.4], oxigenoBajoHace: 5, sobranteHoy: 18 },
 ];
 const DIAS_BIOMETRIA = [28, 21, 14, 7, 1];
 
+/** Borra la granja demo y cualquier granja que el usuario demo administre (p. ej. las creadas al ensayar la demo). */
 async function borrarDemo(db: Db) {
-  const [g] = await db.select().from(granjas).where(eq(granjas.nombre, "Granja Demo"));
-  if (!g) return;
-  const ests = await db.select({ id: estanques.id }).from(estanques).where(eq(estanques.granja_id, g.id));
+  const [admin] = await db.select().from(user).where(eq(user.email, DEMO.email));
+  const propias = admin
+    ? await db
+        .select({ id: granja_miembros.granja_id })
+        .from(granja_miembros)
+        .where(and(eq(granja_miembros.user_id, admin.id), eq(granja_miembros.rol, "admin")))
+    : [];
+  const [demo] = await db.select({ id: granjas.id }).from(granjas).where(eq(granjas.nombre, "Granja Demo"));
+  const granjaIds = [...new Set([...propias.map((p) => p.id), ...(demo ? [demo.id] : [])])];
+  if (granjaIds.length === 0) return;
+  const ests = await db.select({ id: estanques.id }).from(estanques).where(inArray(estanques.granja_id, granjaIds));
   const ids = ests.map((e) => e.id);
   if (ids.length > 0) {
     await db.delete(alimentacion_diaria).where(inArray(alimentacion_diaria.estanque_id, ids));
     await db.delete(parametros_agua).where(inArray(parametros_agua.estanque_id, ids));
     await db.delete(lecturas_charolas).where(inArray(lecturas_charolas.estanque_id, ids));
     await db.delete(muestreos_biometria).where(inArray(muestreos_biometria.estanque_id, ids));
-    await db.delete(estanques).where(eq(estanques.granja_id, g.id));
+    await db.delete(estanques).where(inArray(estanques.granja_id, granjaIds));
   }
-  await db.delete(granja_miembros).where(eq(granja_miembros.granja_id, g.id));
-  await db.delete(granjas).where(eq(granjas.id, g.id));
-  console.log("Granja demo anterior eliminada.");
+  await db.delete(granja_miembros).where(inArray(granja_miembros.granja_id, granjaIds));
+  await db.delete(granjas).where(inArray(granjas.id, granjaIds));
+  console.log(`Granjas eliminadas: ${granjaIds.length} (la demo y las que creó el usuario demo).`);
 }
 
 export async function sembrar(db: Db, opciones: { reset?: boolean } = {}): Promise<void> {
@@ -108,7 +120,7 @@ export async function sembrar(db: Db, opciones: { reset?: boolean } = {}): Promi
 
   const [granja] = await db
     .insert(granjas)
-    .values({ nombre: "Granja Demo", ubicacion: "Sinaloa", hectareas_totales: 20 })
+    .values({ nombre: "Granja Demo", ubicacion: "Sinaloa", latitud: 24.8091, longitud: -107.394, hectareas_totales: 20 })
     .returning();
   await db
     .insert(granja_miembros)
@@ -125,6 +137,8 @@ export async function sembrar(db: Db, opciones: { reset?: boolean } = {}): Promi
         hectareas: plan.hectareas,
         densidad_siembra: plan.densidad,
         fecha_siembra: fechaHace(plan.diasDesdeSiembra),
+        latitud: plan.lat,
+        longitud: plan.lng,
       })
       .returning();
     const estanqueId = estanque!.id;

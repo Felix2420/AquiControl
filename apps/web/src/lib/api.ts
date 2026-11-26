@@ -33,6 +33,8 @@ export interface Granja {
   id: number;
   nombre: string;
   ubicacion: string | null;
+  latitud: number | null;
+  longitud: number | null;
   hectareas_totales: number;
   fecha_registro: string;
   rol: Rol;
@@ -44,6 +46,8 @@ export interface Estanque {
   hectareas: number;
   densidad_siembra: number;
   fecha_siembra: string;
+  latitud: number | null;
+  longitud: number | null;
 }
 export interface Recomendacion {
   dosis_recomendada_kg: number;

@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Campo } from "@/components/Campo";
+import { MapaUbicacion, type Marcador, type Punto } from "@/components/MapaUbicacion";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import type { Rol } from "@/lib/api";
@@ -10,6 +11,7 @@ import {
   useAsignarMiembro,
   useCrearEstanque,
   useCrearGranja,
+  useEliminarGranja,
   useEstanques,
   useGranjas,
   useMiembros,
@@ -46,7 +48,7 @@ export function Configurar() {
         <div className="card"><div className="skeleton h-12 w-full" /></div>
       ) : (
         <>
-          <FormGranja primera={!granjas || granjas.length === 0} />
+          <FormGranja primera={!granjas || granjas.length === 0} onCreada={setGranjaSel} />
           {granja && (
             <section className="card" aria-labelledby="granja-activa">
               <h2 id="granja-activa" className="card-title">Granja activa</h2>
@@ -56,12 +58,14 @@ export function Configurar() {
                   <option key={g.id} value={g.id}>{g.nombre} · {NOMBRE_ROL[g.rol]}</option>
                 ))}
               </Select>
+              {rol === "admin" && <EliminarGranja granja={granja} onEliminada={() => setGranjaSel(null)} />}
               {rol && RANGO[rol] < RANGO.biologo && (
                 <p className="help">Tu rol de técnico permite capturar lecturas y dosis; crear estanques y biometría requiere biólogo o administrador.</p>
               )}
             </section>
           )}
-          {granja && rol && RANGO[rol] >= RANGO.biologo && <FormEstanque granjaId={granja.id} />}
+          {granja && <MapaGranja granja={granja} />}
+          {granja && rol && RANGO[rol] >= RANGO.biologo && <FormEstanque granjaId={granja.id} centro={granja.latitud !== null && granja.longitud !== null ? { lat: granja.latitud, lng: granja.longitud } : null} />}
           {granja && rol && RANGO[rol] >= RANGO.biologo && <FormBiometria granjaId={granja.id} />}
           {granja && rol === "admin" && <Miembros granjaId={granja.id} />}
         </>
@@ -70,11 +74,83 @@ export function Configurar() {
   );
 }
 
+// ───────── Eliminar granja (admin) ─────────
+function EliminarGranja({ granja, onEliminada }: { granja: { id: number; nombre: string }; onEliminada: () => void }) {
+  const eliminar = useEliminarGranja();
+  const toast = useUi((s) => s.mostrarToast);
+  const [confirmando, setConfirmando] = useState(false);
+  // Si cambia la granja activa, la confirmación pendiente ya no aplica.
+  useEffect(() => setConfirmando(false), [granja.id]);
+
+  if (!confirmando) {
+    return (
+      <button type="button" className="mt-4 text-[13px] text-muted hover:text-danger" onClick={() => setConfirmando(true)}>
+        Eliminar esta granja…
+      </button>
+    );
+  }
+  return (
+    <div className="alerta mt-4 flex-col !items-stretch gap-3" role="alert">
+      <span>
+        Se eliminará <b>{granja.nombre}</b> con sus estanques, biometrías e historial de dosis. Esta acción no se puede deshacer.
+      </span>
+      <div className="flex gap-3">
+        <Button
+          type="button"
+          variant="ghost"
+          className="!w-auto"
+          cargando={eliminar.isPending}
+          onClick={() =>
+            eliminar.mutate(granja.id, {
+              onSuccess: () => {
+                toast(`Granja «${granja.nombre}» eliminada.`);
+                onEliminada();
+              },
+              onError: (e) => toast(msg(e), "error"),
+            })
+          }
+        >
+          Sí, eliminar
+        </Button>
+        <Button type="button" variant="ghost" className="!w-auto" onClick={() => setConfirmando(false)}>
+          Cancelar
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// ───────── Mapa de la granja y sus estanques ─────────
+function MapaGranja({ granja }: { granja: { id: number; nombre: string; latitud: number | null; longitud: number | null } }) {
+  const { data: todos } = useEstanques();
+  const marcadores: Marcador[] = [];
+  if (granja.latitud !== null && granja.longitud !== null) {
+    marcadores.push({ lat: granja.latitud, lng: granja.longitud, etiqueta: granja.nombre, tipo: "granja" });
+  }
+  for (const e of todos ?? []) {
+    if (e.granja_id === granja.id && e.latitud !== null && e.longitud !== null) {
+      marcadores.push({ lat: e.latitud, lng: e.longitud, etiqueta: e.identificador_estanque, tipo: "estanque" });
+    }
+  }
+  return (
+    <section className="card" aria-labelledby="mapa-granja">
+      <h2 id="mapa-granja" className="card-title">Mapa</h2>
+      <MapaUbicacion etiqueta={`Mapa de ${granja.nombre} y sus estanques`} marcadores={marcadores} className="h-72" />
+      <p className="help">
+        {marcadores.length === 0
+          ? "Aún no hay ubicaciones. Marca la granja y los estanques en los formularios de abajo al crearlos."
+          : "Amarillo: la granja. Verde agua: cada estanque. Cambia entre Calles y Satélite arriba a la derecha."}
+      </p>
+    </section>
+  );
+}
+
 // ───────── Granja ─────────
 const esquemaGranja = z.object({ nombre: z.string().trim().min(1, "Escribe un nombre."), ubicacion: z.string(), hectareas_totales: positivo("Las hectáreas") });
 
-function FormGranja({ primera }: { primera: boolean }) {
+function FormGranja({ primera, onCreada }: { primera: boolean; onCreada: (id: number) => void }) {
   const crear = useCrearGranja();
+  const [punto, setPunto] = useState<Punto | null>(null);
   const toast = useUi((s) => s.mostrarToast);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<z.infer<typeof esquemaGranja>>({
     resolver: zodResolver(esquemaGranja),
@@ -82,9 +158,11 @@ function FormGranja({ primera }: { primera: boolean }) {
   });
   const enviar = handleSubmit(async (v) => {
     try {
-      await crear.mutateAsync({ nombre: v.nombre.trim(), ubicacion: v.ubicacion.trim() || null, hectareas_totales: Number(v.hectareas_totales) });
+      const nueva = await crear.mutateAsync({ nombre: v.nombre.trim(), ubicacion: v.ubicacion.trim() || null, latitud: punto?.lat ?? null, longitud: punto?.lng ?? null, hectareas_totales: Number(v.hectareas_totales) });
+      onCreada(nueva.id); // la granja recién creada queda como granja activa
       toast("Granja creada. Eres su administrador.");
       reset();
+      setPunto(null);
     } catch (e) {
       toast(msg(e), "error");
     }
@@ -94,7 +172,11 @@ function FormGranja({ primera }: { primera: boolean }) {
       <h2 id="nueva-granja" className="card-title"><span className="step">01</span>{primera ? "Crea tu primera granja" : "Nueva granja"}</h2>
       <form onSubmit={enviar} className="space-y-5" noValidate>
         <Campo id="g-nombre" etiqueta="Nombre" error={errors.nombre?.message}><Input id="g-nombre" aria-describedby="g-nombre-ayuda" {...register("nombre")} /></Campo>
-        <Campo id="g-ubicacion" etiqueta="Ubicación" ayuda="Opcional."><Input id="g-ubicacion" aria-describedby="g-ubicacion-ayuda" {...register("ubicacion")} /></Campo>
+        <Campo id="g-ubicacion" etiqueta="Ubicación" ayuda="Opcional. Por ejemplo, el municipio."><Input id="g-ubicacion" aria-describedby="g-ubicacion-ayuda" {...register("ubicacion")} /></Campo>
+        <div>
+          <p className="label">Punto en el mapa <span className="font-normal text-muted">(opcional)</span></p>
+          <MapaUbicacion etiqueta="Mapa para marcar la ubicación de la granja" valor={punto} onChange={setPunto} />
+        </div>
         <Campo id="g-ha" etiqueta="Hectáreas totales" unidad="ha" error={errors.hectareas_totales?.message}><Input id="g-ha" type="number" step="0.1" inputMode="decimal" aria-describedby="g-ha-ayuda" {...register("hectareas_totales")} /></Campo>
         <Button type="submit" variant={primera ? "accent" : "ghost"} cargando={crear.isPending}>Crear granja</Button>
       </form>
@@ -110,8 +192,9 @@ const esquemaEstanque = z.object({
   fecha_siembra: z.string().min(1, "Elige la fecha de siembra."),
 });
 
-function FormEstanque({ granjaId }: { granjaId: number }) {
+function FormEstanque({ granjaId, centro }: { granjaId: number; centro: Punto | null }) {
   const crear = useCrearEstanque();
+  const [punto, setPunto] = useState<Punto | null>(null);
   const toast = useUi((s) => s.mostrarToast);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<z.infer<typeof esquemaEstanque>>({
     resolver: zodResolver(esquemaEstanque),
@@ -125,8 +208,11 @@ function FormEstanque({ granjaId }: { granjaId: number }) {
         hectareas: Number(v.hectareas),
         densidad_siembra: Number(v.densidad_siembra),
         fecha_siembra: v.fecha_siembra,
+        latitud: punto?.lat ?? null,
+        longitud: punto?.lng ?? null,
       });
       toast("Estanque creado.");
+      setPunto(null);
       reset({ identificador_estanque: "", hectareas: "", densidad_siembra: "", fecha_siembra: hoyISO() });
     } catch (e) {
       toast(msg(e), "error");
@@ -140,6 +226,10 @@ function FormEstanque({ granjaId }: { granjaId: number }) {
         <Campo id="e-ha" etiqueta="Superficie" unidad="ha" error={errors.hectareas?.message}><Input id="e-ha" type="number" step="0.1" inputMode="decimal" aria-describedby="e-ha-ayuda" {...register("hectareas")} /></Campo>
         <Campo id="e-dens" etiqueta="Densidad de siembra" unidad="org/m²" error={errors.densidad_siembra?.message}><Input id="e-dens" type="number" step="0.1" inputMode="decimal" aria-describedby="e-dens-ayuda" {...register("densidad_siembra")} /></Campo>
         <Campo id="e-fecha" etiqueta="Fecha de siembra" error={errors.fecha_siembra?.message}><Input id="e-fecha" type="date" aria-describedby="e-fecha-ayuda" {...register("fecha_siembra")} /></Campo>
+        <div>
+          <p className="label">Ubicación del estanque <span className="font-normal text-muted">(opcional)</span></p>
+          <MapaUbicacion etiqueta="Mapa para marcar la ubicación del estanque" valor={punto} onChange={setPunto} centro={centro} />
+        </div>
         <Button type="submit" variant="ghost" cargando={crear.isPending}>Crear estanque</Button>
       </form>
     </section>

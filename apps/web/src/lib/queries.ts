@@ -63,9 +63,20 @@ export function useRegistrarAlimentacion(estanqueId: number | null) {
 export function useCrearGranja() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (d: { nombre: string; ubicacion: string | null; hectareas_totales: number }) =>
+    mutationFn: async (d: { nombre: string; ubicacion: string | null; latitud: number | null; longitud: number | null; hectareas_totales: number }) =>
       (await api.post<Granja>("/granjas", d)).data,
     onSuccess: () => qc.invalidateQueries({ queryKey: ["granjas"] }),
+  });
+}
+
+export function useEliminarGranja() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => api.delete(`/granjas/${id}`),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["granjas"] });
+      qc.invalidateQueries({ queryKey: ["estanques"] });
+    },
   });
 }
 

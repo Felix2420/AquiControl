@@ -8,6 +8,13 @@
       "when": 1794889535444,
       "tag": "0000_ordinary_gorilla_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795662129333,
+      "tag": "0001_wandering_catseye",
+      "breakpoints": true
     }
   ]
 }
