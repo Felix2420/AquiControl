@@ -1,0 +1,21 @@
+# Blueprint de Render: un solo servicio que sirve API + web (mismo origen).
+# La base de datos va aparte (Neon, gratis): pega su cadena en DATABASE_URL.
+services:
+  - type: web
+    name: acuicontrol
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm --filter @acuicontrol/web build
+    startCommand: pnpm --filter @acuicontrol/api start
+    healthCheckPath: /api/salud
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        sync: false
